@@ -75,3 +75,10 @@ class MeshNetwork:
             if self.get_dist(message.sender, self.drones[i]) <= message.range and \
                     self.drones[i].drone_id != message.sender.drone_id:
                 self.drones[i].receive_message(message)
+
+    def update_drone_coordinates(self, selected_drone, x, y):
+        self.drones[selected_drone].position.x = x
+        self.drones[selected_drone].position.y = y
+
+    def update_drone_radius(self, drone_id, drone_radius):
+        self.drones[drone_id].range = drone_radius
