@@ -11,15 +11,12 @@ from MeshNetwork import MeshNetwork
 
 matplotlib.use('TkAgg')
 
-
 network = MeshNetwork()
 
 # Добавление дронов в сеть
 for i in range(5):
     position = (random.uniform(0, 100), random.uniform(0, 100))
-
-# Запуск симуляции на 10 секунд
-plt.ion()
-network.simulate_network_activity(duration=10)
-plt.ioff()
-plt.show()
+    network.add_drone(Drone(i, Drone.Coordinates(*position), 100, network))
+network.drones[0].connect()
+network.drones[1].connect()
+print(network.drones[0].routing_table)
