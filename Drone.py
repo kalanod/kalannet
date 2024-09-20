@@ -18,11 +18,11 @@ class Drone:
         self.memory = []
         self.channel = 0
         self.network = network
-        self.routing_table: RoutingTable = RoutingTable()
+        self.routing_table: RoutingTable = RoutingTable(self)
 
     def connect(self):
-        self.send_message(-1, 0, self.drone_id)
         self.is_connected = True
+        self.send_message(-1, 0, self.drone_id)
         print(f"Drone {self.drone_id} is_connected to the network.")
 
     def disconnect(self):
@@ -30,7 +30,7 @@ class Drone:
         print(f"Drone {self.drone_id} disconnected from the network.")
 
     def send_message(self, address, code, text):
-        message = Message(self.channel, self, address, Message.Message_data(code, text, self.channel))
+        message = Message(self.channel, self, address, Message.Message_data(code, text))
         print(f"Drone {self.drone_id} sending message: {message.data.text}")
         self.memory.append(message.id)
         self.network.new_message(message)
@@ -51,8 +51,7 @@ class Drone:
             print(f"message {message.data.text} has delivered to {self.drone_id}")
         if (self.routing_table.has_rout(message.address) or message.address == -1) and \
                 message.address != self.drone_id and message.id not in self.memory:
-            message.channel = self.routing_table.get(message.address).next_hop_channel
+            message.channel = self.channel
             message.sender = self
             message.ttl += 1
-            message.data.reverse_channel = self.channel
             self.send_message2(message)
