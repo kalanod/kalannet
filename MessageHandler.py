@@ -17,5 +17,5 @@ def handleMessage(message: Message, drone):
     if message.data.code == 2:
         drone.routing_table.add_table(message.data.text, message.sender.drone_id, message.ttl)
 
-    if message.data.code == 2:
-        drone.routing_table.add_table(message.data.text, message.sender.drone_id, message.ttl)
+    if message.data.code == 3:
+        drone.received.append(message)

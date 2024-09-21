@@ -1,8 +1,24 @@
-
 # Добавление дронов в сеть
-for i in range(5):
-    position = (random.uniform(0, 100), random.uniform(0, 100))
-# network.add_drone(Drone(0, Drone.Coordinates(0, 0), 60, network))
+import random
+
+from Drone import Drone
+from MeshNetwork import MeshNetwork
+
+network = MeshNetwork(1)
+rad = 50
+res = []
+for i in range(15):
+    tmp = []
+    for i in range(10):
+        print("test", i, "/ 50")
+        position = (random.uniform(0, 100), random.uniform(0, 100))
+        network.add_drone(Drone(i, Drone.Coordinates(*position), rad, network))
+        network.update()
+        sum_bands = network.sum_bands()
+        res.append([num, sum_bands])
+        network.clear()
+# res.sort(key=lambda x: x[0])
+print(res)
 # network.add_drone(Drone(1, Drone.Coordinates(50, 0), 60, network))
 # network.add_drone(Drone(2, Drone.Coordinates(100, 0), 60, network))
 # network.add_drone(Drone(3, Drone.Coordinates(150, 0), 60, network))

@@ -1,0 +1,6 @@
+0 - new connection request
+1 - new connection response
+2 - addTable
+3 - ping
+5 - text
+
