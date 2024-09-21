@@ -39,3 +39,7 @@ class RoutingTable:
             for j in table[i]:
                 self.add_rout(i, j.length + ttl + 1, sender)
         self.squeeze()
+
+    def clear(self, drone_id):
+        self.table = {-1: [RoutingTable.Route(-1, 0, -1)],
+                      drone_id: [RoutingTable.Route(drone_id, -1, drone_id)]}

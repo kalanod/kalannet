@@ -83,6 +83,7 @@ class DroneNetworkApp:
             # Обновляем отображение связей между дронами
             self.update_connections()
 
+
     def on_right_click(self, event):
         x, y = event.x, event.y
         for drone_id, (drone_circle, _, _) in self.drones.items():
@@ -91,6 +92,7 @@ class DroneNetworkApp:
                 recipient_id = simpledialog.askinteger("Send Message", "Enter the ID of the recipient:")
                 if recipient_id is not None:
                     print(f"Sending message from Drone {drone_id} to Drone {recipient_id}")
+                    network.drones[drone_id].send_message(recipient_id, 5, "hi")
                 return
 
     def on_scroll(self, event):
@@ -155,4 +157,7 @@ class DroneNetworkApp:
 
 root = tk.Tk()
 app = DroneNetworkApp(root)
+network.start_background_task()
+root.protocol("WM_DELETE_WINDOW", lambda: [network.stop_background_task(), root.destroy()])
+
 root.mainloop()

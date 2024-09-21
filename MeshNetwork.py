@@ -1,8 +1,8 @@
 import math
 import random
+import threading
 import time
 
-import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -82,3 +82,27 @@ class MeshNetwork:
 
     def update_drone_radius(self, drone_id, drone_radius):
         self.drones[drone_id].range = drone_radius
+
+    def start_background_task(self):
+        """Запускает фоновый процесс, который проходит по дронам и вызывает нужные методы."""
+        self.stop_task = False  # Переменная для остановки потока
+        self.task_thread = threading.Thread(target=self.background_task)
+        self.task_thread.start()
+
+    def stop_background_task(self):
+        """Останавливает фоновый процесс."""
+        self.stop_task = True
+        self.task_thread.join()  # Ожидаем завершения потока
+
+    def background_task(self):
+        """Задача, выполняемая в фоновом режиме, которая проходит по каждому дрону и вызывает методы."""
+        while not self.stop_task:
+            # Проход по всем дронам
+            for drone_id in self.drones:
+                drone = self.drones[drone_id]  # Предполагается, что network.drones содержит объекты дронов
+                drone.routing_table.clear(drone_id)
+                drone.send_message(-1, 0, drone_id)
+
+            time.sleep(1)  # Задержка между проходами, чтобы не перегружать процессор
+
+    # Инициализация интерфейса

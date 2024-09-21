@@ -31,13 +31,15 @@ class Drone:
 
     def send_message(self, address, code, text):
         message = Message(self.channel, self, address, Message.Message_data(code, text))
-        print(f"Drone {self.drone_id} sending message: {message.data.text}")
+        if message.data.code != 0 and message.data.code != 1:
+            print(f"Drone {self.drone_id} sending message: {message.data.text}")
         self.memory.append(message.id)
         self.network.new_message(message)
 
 
     def send_message2(self, message):
-        print(f"Drone {self.drone_id} sending message: {message.data.text}")
+        if message.data.code != 0 and message.data.code != 1:
+            print(f"Drone {self.drone_id} sending message: {message.data.text}")
         self.memory.append(message.id)
         self.network.new_message(message)
 
@@ -45,10 +47,12 @@ class Drone:
     def receive_message(self, message: Message):
         if not self.is_connected:
             return
-        print(f"Drone {self.drone_id} received message: {message.data.text}")
+        if message.data.code != 0 and message.data.code != 1:
+            print(f"Drone {self.drone_id} received message: {message.data.text}")
         if message.address == self.drone_id or message.address == -1:
             MessageHandler.handleMessage(message, self)
-            print(f"message {message.data.text} has delivered to {self.drone_id}")
+            if message.data.code != 0 and message.data.code != 1:
+                print(f"message {message.data.text} has delivered to {self.drone_id}")
         if (self.routing_table.has_rout(message.address) or message.address == -1) and \
                 message.address != self.drone_id and message.id not in self.memory:
             message.channel = self.channel
