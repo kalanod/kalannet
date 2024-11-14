@@ -7,16 +7,18 @@ from MeshNetwork import MeshNetwork
 network = MeshNetwork(1)
 rad = 50
 res = []
-for i in range(15):
+for y in range(15):
     tmp = []
-    for i in range(10):
-        print("test", i, "/ 50")
-        position = (random.uniform(0, 100), random.uniform(0, 100))
-        network.add_drone(Drone(i, Drone.Coordinates(*position), rad, network))
+    while not network.connected(0, 1):
+        network.clear()
+        for i in range(y):
+            print("test", y, "/ 15")
+            position = (random.uniform(0, 100), random.uniform(0, 100))
+            network.add_drone(Drone(i, Drone.Coordinates(*position), rad, network))
         network.update()
         sum_bands = network.sum_bands()
         res.append([num, sum_bands])
-        network.clear()
+
 # res.sort(key=lambda x: x[0])
 print(res)
 # network.add_drone(Drone(1, Drone.Coordinates(50, 0), 60, network))
