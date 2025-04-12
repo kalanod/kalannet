@@ -1,24 +1,31 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from sympy import symbols, Eq, solve
 
-# Константы
-d = 100  # Расстояние между передатчиком и приёмником в метрах
-c = 3e8  # Скорость света в вакууме (м/с)
-f_0 = 2.4e9  # Базовая частота (например, 2.4 ГГц для Wi-Fi)
+# Данные задачи
+C1 = np.array([0, 0, 1, 1, 1, 0, 1, 1])  # C1 = 00111011
+C2 = np.array([0, 1, 1, 0, 0, 0, 1, 0])  # C2 = 01100010
 
-# Диапазон частот
-delta_f = np.linspace(-100e6, 100e6, 500)  # Изменение частоты от -100 МГц до 100 МГц
-f = f_0 + delta_f  # Полная частота
+# Определяем символические переменные для ключа K
+k = symbols('k0 k1 k2 k3 k4 k5 k6 k7', integer=True)
+K = np.array(k)
 
-# Рассчёт затухания сигнала
-LFS_dB = 20 * np.log10((4 * np.pi * d * f) / c)
+# Рассчитываем M1 (M1 = C1 XOR K)
+M1 = np.array([C1[i] ^ K[i] for i in range(8)])
 
-# Построение графика
-plt.figure(figsize=(10, 6))
-plt.plot(delta_f / 1e6, LFS_dB, label=f"Расстояние d = {d} м")
-plt.xlabel("Частотный сдвиг Δf (МГц)")
-plt.ylabel("Затухание сигнала LFS (дБ)")
-plt.title("Зависимость затухания сигнала от частотного сдвига Δf")
-plt.legend()
-plt.grid(True)
-plt.show()
+# Выполняем циклический сдвиг вправо для M1, чтобы получить M2
+M2 = np.roll(M1, 1)  # Циклический сдвиг вправо
+
+# Уравнения для нахождения ключа: C2 = M2 XOR K
+equations = [Eq(C2[i], M2[i] ^ K[i]) for i in range(8)]
+
+# Решаем систему уравнений для K
+solution = solve(equations, k)
+
+# Выводим решение
+print("Решение для K:", solution)
+
+# Если нужно вычислить количество единиц в ключе K
+if solution:
+    K_values = np.array([solution[k[i]] for i in range(8)], dtype=int)
+    print("Ключ K:", K_values)
+    print("Число единиц в ключе K:", np.sum(K_values))
